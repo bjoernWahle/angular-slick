@@ -67,6 +67,10 @@ angular.module('slick', [])
           customPaging = (slick, index) ->
             scope.customPaging({ slick: slick, index: index })
 
+          slider.on 'init', (sl) ->
+            scope.onInit() if attrs.onInit
+            if currentIndex?
+              sl.slideHandler(currentIndex)
           slider.slick
             accessibility: scope.accessibility isnt "false"
             adaptiveHeight: scope.adaptiveHeight is "true"
@@ -86,7 +90,7 @@ angular.module('slick', [])
             fade: scope.fade is "true"
             focusOnSelect: scope.focusOnSelect is "true"
             infinite: scope.infinite isnt "false"
-            initialSlide:scope.initialSlide or 0
+            initialSlide: parseInt(scope.initialSlide) or 0,
             lazyLoad: scope.lazyLoad or "ondemand"
             beforeChange: if attrs.onBeforeChange then scope.onBeforeChange else undefined
             onReInit: if attrs.onReInit then scope.onReInit else undefined
@@ -108,14 +112,8 @@ angular.module('slick', [])
             prevArrow: if scope.prevArrow then $(scope.prevArrow) else undefined
             nextArrow: if scope.nextArrow then $(scope.nextArrow) else undefined
 
-
-          slider.on 'init', (sl) ->
-            scope.onInit() if attrs.onInit
-            if currentIndex?
-              sl.slideHandler(currentIndex)
-
           slider.on 'afterChange', (event, slick, currentSlide, nextSlide) ->
-            scope.onAfterChange() if scope.onAfterChange
+            scope.onAfterChange({"event": event, "currentSlide": currentSlide, "nextSlide": nextSlide}) if scope.onAfterChange
 
             if currentIndex?
               scope.$apply(->

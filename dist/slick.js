@@ -75,6 +75,14 @@ angular.module('slick', []).directive('slick', [
                 index: index
               });
             };
+            slider.on('init', function (sl) {
+              if (attrs.onInit) {
+                scope.onInit();
+              }
+              if (currentIndex != null) {
+                return sl.slideHandler(currentIndex);
+              }
+            });
             slider.slick({
               accessibility: scope.accessibility !== 'false',
               adaptiveHeight: scope.adaptiveHeight === 'true',
@@ -94,7 +102,7 @@ angular.module('slick', []).directive('slick', [
               fade: scope.fade === 'true',
               focusOnSelect: scope.focusOnSelect === 'true',
               infinite: scope.infinite !== 'false',
-              initialSlide: scope.initialSlide || 0,
+              initialSlide: parseInt(scope.initialSlide) || 0,
               lazyLoad: scope.lazyLoad || 'ondemand',
               beforeChange: attrs.onBeforeChange ? scope.onBeforeChange : void 0,
               onReInit: attrs.onReInit ? scope.onReInit : void 0,
@@ -116,17 +124,13 @@ angular.module('slick', []).directive('slick', [
               prevArrow: scope.prevArrow ? $(scope.prevArrow) : void 0,
               nextArrow: scope.nextArrow ? $(scope.nextArrow) : void 0
             });
-            slider.on('init', function (sl) {
-              if (attrs.onInit) {
-                scope.onInit();
-              }
-              if (currentIndex != null) {
-                return sl.slideHandler(currentIndex);
-              }
-            });
             slider.on('afterChange', function (event, slick, currentSlide, nextSlide) {
               if (scope.onAfterChange) {
-                scope.onAfterChange();
+                scope.onAfterChange({
+                  'event': event,
+                  'currentSlide': currentSlide,
+                  'nextSlide': nextSlide
+                });
               }
               if (currentIndex != null) {
                 return scope.$apply(function () {
