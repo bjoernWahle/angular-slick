@@ -1,7 +1,7 @@
 {
   "name": "angular-slick-fixed",
   "homepage": "https://github.com/bjoernWahle/angular-slick-fixed",
-  "version": "0.2.1",
+  "version": "0.2.1.1",
   "main": "dist/slick.js",
   "ignore": [
     "app",
